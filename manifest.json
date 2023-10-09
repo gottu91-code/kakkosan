@@ -1,0 +1,19 @@
+{
+  "name": "かっこで囲むさん",
+  "description": "選択テキストをかっこで囲みます",
+  "version": "0.0.4",
+  "manifest_version": 3,
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions" : [
+    "contextMenus",
+    "tabs"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["content.js"]
+    }
+  ]
+}
