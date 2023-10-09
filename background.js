@@ -1,27 +1,30 @@
-chrome.runtime.onInstalled.addListener(() => {
-  chrome.contextMenus.create({
-    id: 'enclose',
-    title: 'かっこで囲う',
-    contexts: ['selection'],
-  });
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (changeInfo.status === 'loading') {
+    const url = tab.url;
+
+    chrome.contextMenus.remove('enclose', () => {
+      const lastError = chrome.runtime.lastError;
+      if (lastError) {
+        console.log(lastError);
+      }
+
+      if (url.startsWith('http:') || url.startsWith('https:')) {
+        chrome.contextMenus.create({
+          id: 'enclose',
+          title: 'かっこで囲う',
+          contexts: ['selection'],
+          documentUrlPatterns: ['http://*/*', 'https://*/*']
+        });
+      }
+    });
+  }
 });
 
-chrome.contextMenus.onClicked.addListener(async (info, tab) => {
-  console.log('info: ', info)
-  console.log('tab: ', tab)
 
-  const selectedText = info.selectionText;
+chrome.contextMenus.onClicked.addListener(async (info, tabInfo) => {
+  console.log(info)
+  console.log(tabInfo)
 
-  if (tab !== undefined) {
-    switch (info.menuItemId) {
-      case 'enclose':
-        chrome.tabs.sendMessage(tab.id, {
-          type: 'SHOW',
-          data: {
-            selectedText
-          },
-        });
-        break;
-    }
-  }
+  const [tab] = await chrome.tabs.query({active: true, lastFocusedWindow: true});
+  await chrome.tabs.sendMessage(tab.id, {});
 });

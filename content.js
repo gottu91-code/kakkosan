@@ -1,27 +1,21 @@
-// document.body.style.backgroundColor = "#6d6d6d"; // デバッグ用
+const encloseText = () => {
+  const activeElement = document.activeElement;
+  const activeTagName = activeElement.tagName;
 
-function encloseTextInNode(node, targetText) {
-  const walk = document.createTreeWalker(node, NodeFilter.SHOW_TEXT, null, false);
-  while (n = walk.nextNode()) {
-    const regex = new RegExp(targetText, 'g');
-    if (regex.test(n.nodeValue)) {
-      const replacedText = n.nodeValue.replace(regex, `【${targetText}】`);
-      n.nodeValue = replacedText;
-      console.log('cccccccccc')
-    }
+  const selection = window.getSelection();
+
+  if(activeTagName === 'TEXTAREA' || activeTagName === 'INPUT') {
+    const selectedText = selection.toString();
+    activeElement.setRangeText(`【${selectedText}】`)
+  } else {
+    const range = selection.getRangeAt(0);
+    const selectedText = range.toString();
+    const newText = document.createTextNode(`【${selectedText}】`);
+    range.deleteContents();
+    range.insertNode(newText);
   }
-  console.log('bbbbbb')
 }
 
-function encloseText(targetText) {
-  encloseTextInNode(document.body, targetText);
-}
-
-chrome.runtime.onMessage.addListener(async function (message, sender, sendResponse) {
-    const selectedText = message.data.selectedText;
-    const kakkoText = selectedText.replace(selectedText, `【${selectedText}】`);
-
-    console.log(kakkoText)
-    console.log('aaaaaaa')
-    encloseText(selectedText);
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  encloseText();
 });
