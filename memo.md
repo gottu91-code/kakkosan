@@ -22,6 +22,7 @@
 - 囲う以外も対応 先頭に■挿入 ■タイトル
 - アイコン設定
 - テンプレートの使用 (https://github.com/sinanbekar/browser-extension-react-typescript-starter)
+- テンプレートの使用 (https://github.com/antfu/vitesse-webext)
 - ChatGPT かっこが反映されない
 
 ## 作ってよかったこと
